@@ -1,4 +1,5 @@
 import com.google.protobuf.gradle.id
+import java.util.Base64
 
 plugins {
     alias(libs.plugins.android.application)
@@ -28,7 +29,7 @@ android {
     if (keystoreBase64.isNotEmpty()) {
         val keystoreFile = File(rootProject.buildDir, "release.keystore")
         keystoreFile.parentFile.mkdirs()
-        keystoreFile.writeBytes(java.util.Base64.getDecoder().decode(keystoreBase64))
+        keystoreFile.writeBytes(Base64.getDecoder().decode(keystoreBase64))
 
         signingConfigs {
             create("release") {
