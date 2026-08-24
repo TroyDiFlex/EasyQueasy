@@ -23,10 +23,29 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val keystoreBase64 = System.getenv("KEYSTORE_BASE64") ?: ""
+            if (keystoreBase64.isNotEmpty()) {
+                val keystoreFile = File(rootProject.buildDir, "release.keystore")
+                keystoreFile.parentFile.mkdirs()
+                keystoreFile.writeBytes(android.util.Base64.decode(keystoreBase64, android.util.Base64.DEFAULT))
+                storeFile = keystoreFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+                keyAlias = System.getenv("KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            val keystoreBase64 = System.getenv("KEYSTORE_BASE64") ?: ""
+            if (keystoreBase64.isNotEmpty()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
