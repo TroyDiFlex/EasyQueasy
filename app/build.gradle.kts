@@ -1,5 +1,4 @@
 import com.google.protobuf.gradle.id
-import java.util.Base64
 
 plugins {
     alias(libs.plugins.android.application)
@@ -24,19 +23,15 @@ android {
         }
     }
 
-    val keystoreBase64 = System.getenv("KEYSTORE_BASE64") ?: ""
+    val signingStoreFile = System.getenv("SIGNING_STORE_FILE") ?: ""
 
-    if (keystoreBase64.isNotEmpty()) {
-        val keystoreFile = File(rootProject.buildDir, "release.keystore")
-        keystoreFile.parentFile.mkdirs()
-        keystoreFile.writeBytes(Base64.getDecoder().decode(keystoreBase64))
-
+    if (signingStoreFile.isNotEmpty()) {
         signingConfigs {
             create("release") {
-                storeFile = keystoreFile
-                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-                keyAlias = System.getenv("KEY_ALIAS") ?: ""
-                keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+                storeFile = file(signingStoreFile)
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: ""
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: ""
             }
         }
     }
@@ -45,7 +40,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            if (keystoreBase64.isNotEmpty()) {
+            if (signingStoreFile.isNotEmpty()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
