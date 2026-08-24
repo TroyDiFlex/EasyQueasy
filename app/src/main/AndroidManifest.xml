@@ -46,7 +46,11 @@
             android:exported="false"
             android:foregroundServiceType="specialUse"
             android:icon="@mipmap/monochrome_logo"
-            android:process=":foreground_overlay" />
+            android:process=":foreground_overlay">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FG_SERVICE_PERMISSION"
+                android:value="This app uses a foreground service to display a motion-sickness relief overlay on the screen while active." />
+        </service>
 
         <service
             android:name=".services.ForegroundOverlayTileService"
